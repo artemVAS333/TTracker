@@ -1,5 +1,5 @@
 function App() {
-	return <button className='text-3xl font-bold underline cursor-pointer'>Click Me!</button>
+  return <>Test</>
 }
 
-export default App
+export default App;

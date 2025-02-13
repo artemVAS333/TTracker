@@ -36,3 +36,8 @@ contextBridge.exposeInMainWorld('electron', {
 	// Any other methods you want to expose in the window object.
 	// ...
 })
+
+contextBridge.exposeInMainWorld("electron", {
+  getTheme: () => ipcRenderer.invoke("get-theme"),
+  setTheme: (theme: unknown) => ipcRenderer.invoke("set-theme", theme),
+});
