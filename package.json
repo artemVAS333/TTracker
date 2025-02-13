@@ -19,5 +19,10 @@
 	"workspaces": [
 		"apps/*",
 		"packages/*"
-	]
+	],
+	"dependencies": {
+		"@types/react": "^19.0.8",
+		"react": "^19.0.0",
+		"react-dom": "^19.0.0"
+	}
 }

@@ -23,7 +23,7 @@ export class AppController {
         message: 'User created successfully',
         user,
       };
-    } catch (error) {
+    } catch (error: unknown) {
       return {
         message: 'Error creating user',
         error,
