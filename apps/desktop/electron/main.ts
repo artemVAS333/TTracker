@@ -3,17 +3,13 @@ import { app, BrowserWindow, ipcMain } from 'electron'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 
-import Store from 'electron-store';
+import Store from 'electron-store'
 
-const store = new Store();
+const store = new Store()
 
 // IPC listener
-ipcMain.on('electron-store-get', async (event, val) => {
-  event.returnValue = store.get(val);
-});
-ipcMain.on('electron-store-set', async (_event, key, val) => {
-  store.set(key, val);
-});
+ipcMain.on('electron-store-get', async (event, val) => (event.returnValue = store.get(val)))
+ipcMain.on('electron-store-set', async (_event, key, val) => store.set(key, val))
 
 // const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -39,41 +35,41 @@ process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path.join(process.env.APP_ROOT, 
 let win: BrowserWindow | null
 
 function createWindow() {
-  win = new BrowserWindow({
-    icon: path.join(process.env.VITE_PUBLIC, 'electron-vite.svg'),
-    webPreferences: {
-      preload: path.join(__dirname, 'preload.mjs'),
-    },
-  })
+	win = new BrowserWindow({
+		icon: process.env.VITE_PUBLIC ? path.join(process.env.VITE_PUBLIC, 'electron-vite.svg') : undefined,
+		webPreferences: {
+			preload: path.join(__dirname, 'preload.mjs'),
+		},
+	})
 
-  // Test active push message to Renderer-process.
-  win.webContents.on('did-finish-load', () => {
-    win?.webContents.send('main-process-message', (new Date).toLocaleString())
-    win?.webContents.openDevTools()
-  })
+	// Test active push message to Renderer-process.
+	win.webContents.on('did-finish-load', () => {
+		win?.webContents.send('main-process-message', new Date().toLocaleString())
+		win?.webContents.openDevTools()
+	})
 
-  if (VITE_DEV_SERVER_URL) {
-    win.loadURL(VITE_DEV_SERVER_URL)
-  } else {
-    // win.loadFile('dist/index.html')
-    win.loadFile(path.join(RENDERER_DIST, 'index.html'))
-  }
+	if (VITE_DEV_SERVER_URL) {
+		win.loadURL(VITE_DEV_SERVER_URL)
+	} else {
+		// win.loadFile('dist/index.html')
+		win.loadFile(path.join(RENDERER_DIST, 'index.html'))
+	}
 }
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-    win = null
-  }
+	if (process.platform !== 'darwin') {
+		app.quit()
+		win = null
+	}
 })
 
 app.on('activate', () => {
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (BrowserWindow.getAllWindows().length === 0) createWindow()
+	// On OS X it's common to re-create a window in the app when the
+	// dock icon is clicked and there are no other windows open.
+	if (BrowserWindow.getAllWindows().length === 0) createWindow()
 })
 
 app.whenReady().then(createWindow)

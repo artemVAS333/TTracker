@@ -1,7 +1,6 @@
 import { Controller, Get, Put, Body } from '@nestjs/common';
-import { AppService } from './app.service';
 import { DbService } from './db/db.service';
-import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { User } from '@prisma/client';
 
 @Controller()
@@ -20,7 +19,6 @@ export class AppController {
           email: data.email,
         },
       });
-
       return {
         message: 'User created successfully',
         user,
@@ -36,9 +34,6 @@ export class AppController {
   @Get()
   @ApiOperation({ summary: 'Get all users' })
   async getUsers(): Promise<User[]> {
-    const users = await this.dbService.user.findMany();
-    console.log(users);
-
-    return users;
+    return await this.dbService.user.findMany();
   }
 }
