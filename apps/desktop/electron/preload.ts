@@ -18,9 +18,6 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
 		const [channel, ...omit] = args
 		return ipcRenderer.invoke(channel, ...omit)
 	},
-
-	// You can expose other APTs you need here.
-	// ...
 })
 
 contextBridge.exposeInMainWorld('electron', {
@@ -31,13 +28,5 @@ contextBridge.exposeInMainWorld('electron', {
 		set(property: unknown, val: unknown) {
 			ipcRenderer.send('electron-store-set', property, val)
 		},
-		// Other method you want to add like has(), reset(), etc.
 	},
-	// Any other methods you want to expose in the window object.
-	// ...
 })
-
-contextBridge.exposeInMainWorld("electron", {
-  getTheme: () => ipcRenderer.invoke("get-theme"),
-  setTheme: (theme: unknown) => ipcRenderer.invoke("set-theme", theme),
-});
