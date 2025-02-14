@@ -7,13 +7,19 @@ declare namespace NodeJS {
   }
 }
 
+// global.d.ts
 export declare global {
   interface Window {
+    ipcRenderer: {
+      on: (channel: string, listener: (event: unknown, ...args: unknown[]) => void) => void;
+      off: (channel: string, listener: (event: unknown, ...args: unknown[]) => void) => void;
+      send: (channel: string, ...args: unknown[]) => void;
+      invoke: (channel: string, ...args: unknown[]) => Promise<unknown>;
+    };
     electron: {
-      ipcRenderer: Electron.IpcRenderer;
       store: {
-        get: (key: string) => unknown;
-        set: (key: string, val: unknown) => void;
+        get: (key: unknown) => unknown;
+        set: (property: unknown, val: unknown) => void;
       };
     };
   }

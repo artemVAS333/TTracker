@@ -21,6 +21,8 @@ function createWindow() {
     icon: process.env.VITE_PUBLIC ? path.join(process.env.VITE_PUBLIC, 'electron-vite.svg') : undefined,
     webPreferences: {
       preload: path.join(__dirname, 'preload.mjs'),
+      contextIsolation: true,
+      nodeIntegration: false,
     },
   });
 
@@ -48,6 +50,9 @@ ipcMain.on('electron-store-get', async (event, val) => {
 });
 ipcMain.on('electron-store-set', async (_event, key, val) => {
   store.set(key, val);
+});
+ipcMain.on('window-closed', (event) => {
+  event.reply('window-closed-reply', { status: 'closed' });
 });
 
 app.whenReady().then(createWindow);

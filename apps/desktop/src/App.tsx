@@ -18,9 +18,23 @@ export default function App() {
 
   useEffect(() => {
     const storedTimers = window.electron.store.get('timers') || [];
-    setTimers(Array.isArray(storedTimers) ? storedTimers : []);
+    const updatedTimers = (Array.isArray(storedTimers) ? storedTimers : []).map((timer) => ({
+      ...timer,
+      isActive: false,
+    }));
 
-    window.addEventListener('beforeunload', () => {});
+    const handleWindowClose = () => {
+      setTimers((prevTimers) => {
+        const newTimers = prevTimers.map((timer) => ({ ...timer, isActive: false }));
+        window.electron.store.set('timers', newTimers);
+        return newTimers;
+      });
+    };
+
+    setTimers(updatedTimers);
+
+    window.ipcRenderer.on('window-closed', handleWindowClose);
+    return () => window.ipcRenderer.off('window-closed', handleWindowClose);
   }, []);
 
   const updateTimerInStore = (updatedTimer: Timer) => {
