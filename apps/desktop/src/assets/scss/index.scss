@@ -1,0 +1,96 @@
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  box-sizing: border-box;
+
+  -webkit-tap-highlight-color: transparent;
+}
+
+ul,
+ol,
+li {
+  list-style: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: inherit;
+  font-size: inherit;
+}
+
+img {
+  vertical-align: top;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  user-select: none;
+  cursor: pointer;
+}
+
+button {
+  cursor: pointer;
+}
+
+html,
+body {
+  height: 100%;
+  background-color: $main-bg-color;
+  color: $main-color;
+  font-family: $font-main;
+  font-weight: 400;
+  font-style: normal;
+
+  scroll-behavior: smooth;
+}
+
+body {
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+::selection {
+  background-color: rgba(255, 255, 255, 0.8);
+  color: $main-bg-color;
+}
+
+::-webkit-scrollbar {
+  display: none;
+  width: clamp(5px, 1vw, 7px);
+  height: clamp(5px, 1vw, 7px);
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: $main-color;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  transition: 0.3s ease;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.5);
+  }
+}
+
+:active,
+:hover,
+:focus {
+  outline: 0;
+}
+
+.user-select-none {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
