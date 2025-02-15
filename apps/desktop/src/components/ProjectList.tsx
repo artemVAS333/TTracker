@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../store';
+import { RootState } from '../state/store';
 import {
   deleteTask,
   delteProject,
@@ -8,7 +8,7 @@ import {
   startTask,
   stopTask,
   unPinTask,
-} from '../../state/project/projectSlice';
+} from '../state/project/projectSlice';
 import { useState } from 'react';
 import AddTask from './AddTask';
 import TaskList from './TaskList';

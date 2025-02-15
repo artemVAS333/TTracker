@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { addProject } from '../../state/project/projectSlice';
+import { addProject } from '../state/project/projectSlice';
 
 export default function AddProject() {
   const [projectName, setProjectName] = useState('');

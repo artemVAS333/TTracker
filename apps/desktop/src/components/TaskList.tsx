@@ -1,43 +1,46 @@
-import TaskRow from './TaskRow';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../state/store';
+import { deleteTask, pinTask, startTask, stopTask, unPinTask } from '../state/project/projectSlice';
 
-interface TaskListProps {
-  tasks: { id: number; title: string; description: string; time: number; isActive: boolean }[];
-  onStart: (id: number) => void;
-  onStop: (id: number) => void;
-  onReset: (id: number) => void;
-  onDelete: (id: number) => void;
-}
+export default function TaskList() {
+  const dispatch = useDispatch();
+  const activeProjectId = useSelector((state: RootState) => state.project.activeProjectId);
+  const activeProject = useSelector((state: RootState) => state.project.projects.find((p) => p.id === activeProjectId));
 
-export default function TaskList({ tasks, onStart, onStop, onReset, onDelete }: TaskListProps) {
-  if (tasks.length === 0) return null;
+  if (!activeProject) return <p>Choose project</p>;
 
   return (
-    <div className="mb-8">
-      <h2 className="text-xl font-semibold mb-4">{tasks[0].isActive ? 'Active Tasks' : 'Inactive Tasks'}</h2>
-      <table className="table-auto border-collapse border border-gray-300 w-full shadow-md rounded-lg">
-        <thead className="bg-gray-200">
-          <tr>
-            <th className="border border-gray-300 px-4 py-2 text-left text-sm font-semibold text-gray-600">Title</th>
-            <th className="border border-gray-300 px-4 py-2 text-left text-sm font-semibold text-gray-600">
-              Description
-            </th>
-            <th className="border border-gray-300 px-4 py-2 text-left text-sm font-semibold text-gray-600">Time</th>
-            <th className="border border-gray-300 px-4 py-2 text-left text-sm font-semibold text-gray-600">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {tasks.map((task) => (
-            <TaskRow
-              key={task.id}
-              task={task}
-              onStart={onStart}
-              onStop={onStop}
-              onReset={onReset}
-              onDelete={onDelete}
-            />
-          ))}
-        </tbody>
-      </table>
+    <div>
+      <ul>
+        {activeProject.tasks.map((task) => (
+          <li key={task.id}>
+            {task.title} - {task.isActive ? '⏳ working' : '🛑 stopped'}
+            <button
+              onClick={() => {
+                task.isActive
+                  ? dispatch(stopTask({ projectId: activeProject.id, taskId: task.id }))
+                  : dispatch(startTask({ projectId: activeProject.id, taskId: task.id }));
+                console.log(task.isActive);
+              }}
+            >
+              {task.isActive ? 'Stop' : 'Start'}
+            </button>
+            <button
+              className={task.pinned == true ? 'bg-yellow-500' : ``}
+              onClick={() => {
+                task.pinned == false
+                  ? dispatch(pinTask({ projectId: activeProject.id, taskId: task.id }))
+                  : dispatch(unPinTask({ projectId: activeProject.id, taskId: task.id }));
+              }}
+            >
+              {task.pinned != true ? 'Pin' : 'Unpin'}
+            </button>
+            <button onClick={() => dispatch(deleteTask({ projectId: activeProject.id, taskId: task.id }))}>
+              Delete
+            </button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
