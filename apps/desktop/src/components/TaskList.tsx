@@ -1,19 +1,19 @@
-import TimerRow from './TimerRow';
+import TaskRow from './TaskRow';
 
-interface TimerListProps {
-  timers: { id: number; title: string; description: string; time: number; isActive: boolean }[];
+interface TaskListProps {
+  tasks: { id: number; title: string; description: string; time: number; isActive: boolean }[];
   onStart: (id: number) => void;
   onStop: (id: number) => void;
   onReset: (id: number) => void;
   onDelete: (id: number) => void;
 }
 
-export default function TimerList({ timers, onStart, onStop, onReset, onDelete }: TimerListProps) {
-  if (timers.length === 0) return null;
+export default function TaskList({ tasks, onStart, onStop, onReset, onDelete }: TaskListProps) {
+  if (tasks.length === 0) return null;
 
   return (
     <div className="mb-8">
-      <h2 className="text-xl font-semibold mb-4">{timers[0].isActive ? 'Active Timers' : 'Inactive Timers'}</h2>
+      <h2 className="text-xl font-semibold mb-4">{tasks[0].isActive ? 'Active Tasks' : 'Inactive Tasks'}</h2>
       <table className="table-auto border-collapse border border-gray-300 w-full shadow-md rounded-lg">
         <thead className="bg-gray-200">
           <tr>
@@ -26,10 +26,10 @@ export default function TimerList({ timers, onStart, onStop, onReset, onDelete }
           </tr>
         </thead>
         <tbody>
-          {timers.map((timer) => (
-            <TimerRow
-              key={timer.id}
-              timer={timer}
+          {tasks.map((task) => (
+            <TaskRow
+              key={task.id}
+              task={task}
               onStart={onStart}
               onStop={onStop}
               onReset={onReset}

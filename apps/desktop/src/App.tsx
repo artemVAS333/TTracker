@@ -1,32 +1,26 @@
-import { useTimers } from './hooks/useTimers';
+import useTask from './hooks/useTask';
 import Form from './components/Form';
-import TimerList from './components/TimerList';
+import TaskList from './components/TaskList';
 
 export default function App() {
-  const { timers, addTimer, deleteTimer, startTimer, stopTimer, resetTimer } = useTimers();
+  const { tasks, addTask, deleteTask, startTask, stopTask, resetTask } = useTask();
 
-  const activeTimers = timers.filter((timer) => timer.isActive);
-  const inactiveTimers = timers.filter((timer) => !timer.isActive);
+  const activeTasks = tasks.filter((task) => task.isActive);
+  const inactiveTasks = tasks.filter((task) => !task.isActive);
 
   return (
     <>
-      <Form addTimer={addTimer} />
-      {activeTimers.length > 0 && (
-        <TimerList
-          timers={activeTimers}
-          onStart={startTimer}
-          onStop={stopTimer}
-          onReset={resetTimer}
-          onDelete={deleteTimer}
-        />
+      <Form addTask={addTask} />
+      {activeTasks.length > 0 && (
+        <TaskList tasks={activeTasks} onStart={startTask} onStop={stopTask} onReset={resetTask} onDelete={deleteTask} />
       )}
-      {inactiveTimers.length > 0 && (
-        <TimerList
-          timers={inactiveTimers}
-          onStart={startTimer}
-          onStop={stopTimer}
-          onReset={resetTimer}
-          onDelete={deleteTimer}
+      {inactiveTasks.length > 0 && (
+        <TaskList
+          tasks={inactiveTasks}
+          onStart={startTask}
+          onStop={stopTask(0, { isActive: false })}
+          onReset={resetTask}
+          onDelete={deleteTask}
         />
       )}
     </>
