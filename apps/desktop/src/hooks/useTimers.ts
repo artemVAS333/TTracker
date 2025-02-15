@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 interface Timer {
   id: number;
@@ -9,104 +9,82 @@ interface Timer {
 }
 
 export function useTimers() {
-  const [timers, setTimers] = useState<Timer[]>([]);
-  const intervals = useRef<Map<number, NodeJS.Timeout>>(new Map()); // Changed to a Map
+  const [timers, updateTimers] = useState<Timer[]>([]);
+  const intervals = useRef<Map<number, NodeJS.Timeout>>(new Map());
 
-  useEffect(() => {
-    const storedTimers = window.electron.store.get('timers') || [];
-    const updatedTimers = (Array.isArray(storedTimers) ? storedTimers : []).map((timer) => ({
-      ...timer,
-      isActive: false,
-    }));
-    setTimers(updatedTimers);
-
-    const handleWindowClose = () => {
-      setTimers((prevTimers) => {
-        const newTimers = prevTimers.map((timer) => ({ ...timer, isActive: false }));
-        window.electron.store.set('timers', newTimers);
-        return newTimers;
-      });
-    };
-
-    window.ipcRenderer.on('window-closed', handleWindowClose);
-    return () => window.ipcRenderer.off('window-closed', handleWindowClose);
+  const loadTimersFromStore = useCallback(() => {
+    const storedTimers = getStoredTimers();
+    const updatedTimers = storedTimers.map((timer) => ({ ...timer, isActive: false }));
+    updateTimers(updatedTimers);
   }, []);
 
-  const updateTimerInStore = (updatedTimer: Timer) => {
-    const storedTimers = (window.electron.store.get('timers') as Timer[]) || [];
-    const timerIndex = storedTimers.findIndex((timer: Timer) => timer.id === updatedTimer.id);
+  useEffect(() => {
+    loadTimersFromStore();
+    window.ipcRenderer.on('window-closed', loadTimersFromStore);
+    return () => window.ipcRenderer.off('window-closed', loadTimersFromStore);
+  }, [loadTimersFromStore]);
 
-    if (timerIndex !== -1) {
-      storedTimers[timerIndex] = { ...storedTimers[timerIndex], ...updatedTimer };
-      window.electron.store.set('timers', storedTimers);
-    }
+  const getStoredTimers = (): Timer[] => {
+    const storedTimers = window.electron.store.get('timers') || [];
+    return Array.isArray(storedTimers) ? storedTimers : [];
   };
 
+  const setStoredTimers = (timers: Timer[]) => window.electron.store.set('timers', timers);
+
   const addTimer = (title: string, description?: string) => {
-    const newTimer = { id: Date.now(), title, description: description || '', time: 0, isActive: false };
-    setTimers((prev) => {
-      const updatedTimers = [...prev, newTimer];
-      window.electron.store.set('timers', updatedTimers);
-      return updatedTimers;
-    });
+    const newTimer: Timer = { id: Date.now(), title, description: description || '', time: 0, isActive: false };
+    updateTimersAndStore((prevTimers) => [...prevTimers, newTimer]);
   };
 
   const deleteTimer = (id: number) => {
-    const timerInterval = intervals.current.get(id);
-    if (timerInterval) {
-      clearInterval(timerInterval); // Clear the interval
-      intervals.current.delete(id); // Remove from Map
-    }
+    clearIntervalIfExists(id);
+    updateTimersAndStore((prevTimers) => prevTimers.filter((timer) => timer.id !== id));
+  };
 
-    setTimers((prev) => {
-      const updatedTimers = prev.filter((timer) => timer.id !== id);
-      window.electron.store.set('timers', updatedTimers);
+  const startTimer = (id: number) => {
+    if (intervals.current.has(id)) return;
+
+    const timerInterval = setInterval(
+      () => updateTimers((prevTimers) => prevTimers.map((timer) => (timer.id === id ? incrementTimer(timer) : timer))),
+      1000,
+    );
+
+    intervals.current.set(id, timerInterval);
+    updateTimersAndStore((prevTimers) => setTimerActiveState(prevTimers, id, true));
+  };
+
+  const stopTimer = (id: number) => {
+    clearIntervalIfExists(id);
+    updateTimersAndStore((prevTimers) => setTimerActiveState(prevTimers, id, false));
+  };
+
+  const resetTimer = (id: number) => {
+    clearIntervalIfExists(id);
+    updateTimersAndStore((prevTimers) => resetTimerState(prevTimers, id));
+  };
+
+  const updateTimersAndStore = (updateFn: (timers: Timer[]) => Timer[]) => {
+    updateTimers((prevTimers) => {
+      const updatedTimers = updateFn(prevTimers);
+      setStoredTimers(updatedTimers);
       return updatedTimers;
     });
   };
 
-  const startTimer = (id: number) => {
-    if (intervals.current.has(id)) return; // Check if the timer is already running
+  const incrementTimer = (timer: Timer): Timer => ({ ...timer, time: timer.time + 1 });
 
-    intervals.current.set(
-      id,
-      setInterval(() => {
-        setTimers((prevTimers) => {
-          return prevTimers.map((timer) => {
-            if (timer.id === id) {
-              const updatedTimer = { ...timer, time: timer.time + 1 };
-              updateTimerInStore(updatedTimer); // Update the store
-              return updatedTimer;
-            }
-            return timer;
-          });
-        });
-      }, 1000),
-    );
+  const setTimerActiveState = (timers: Timer[], id: number, isActive: boolean): Timer[] =>
+    timers.map((timer) => (timer.id === id ? { ...timer, isActive } : timer));
 
-    setTimers((prevTimers) => prevTimers.map((timer) => (timer.id === id ? { ...timer, isActive: true } : timer)));
-  };
+  const resetTimerState = (timers: Timer[], id: number): Timer[] =>
+    timers.map((timer) => (timer.id === id ? { ...timer, time: 0, isActive: false } : timer));
 
-  const stopTimer = (id: number) => {
+  const clearIntervalIfExists = (id: number) => {
     const timerInterval = intervals.current.get(id);
     if (timerInterval) {
-      clearInterval(timerInterval); // Clear the interval
-      intervals.current.delete(id); // Remove from Map
+      clearInterval(timerInterval);
+      intervals.current.delete(id);
     }
-
-    setTimers((prevTimers) => prevTimers.map((timer) => (timer.id === id ? { ...timer, isActive: false } : timer)));
-  };
-
-  const resetTimer = (id: number) => {
-    const timerInterval = intervals.current.get(id);
-    if (timerInterval) {
-      clearInterval(timerInterval); // Clear the interval
-      intervals.current.delete(id); // Remove from Map
-    }
-
-    setTimers((prevTimers) =>
-      prevTimers.map((timer) => (timer.id === id ? { ...timer, time: 0, isActive: false } : timer)),
-    );
   };
 
   return { timers, addTimer, deleteTimer, startTimer, stopTimer, resetTimer };
