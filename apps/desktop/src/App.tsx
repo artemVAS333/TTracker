@@ -2,6 +2,8 @@ import useTask from './hooks/useTask';
 import Form from './components/Form';
 import TaskList from './components/TaskList';
 
+import Counter from './components/Counter';
+
 export default function App() {
   const { tasks, addTask, deleteTask, startTask, stopTask, resetTask } = useTask();
 
@@ -23,6 +25,7 @@ export default function App() {
           onDelete={deleteTask}
         />
       )}
+      <Counter />
     </>
   );
 }
