@@ -1,31 +1,18 @@
-import useTask from './hooks/useTask';
-import Form from './components/Form';
-import TaskList from './components/TaskList';
-
-import Counter from './components/Counter';
+import ProjectList from './state/project/ProjectList';
+import TaskList from './state/project/TaskList';
+import AddProject from './state/project/AddProject';
+import AddTask from './state/project/AddTask';
+import useAutoSave from './hooks/useAutoSave';
 
 export default function App() {
-  const { tasks, addTask, deleteTask, startTask, stopTask, resetTask } = useTask();
-
-  const activeTasks = tasks.filter((task) => task.isActive);
-  const inactiveTasks = tasks.filter((task) => !task.isActive);
-
+  useAutoSave();
   return (
-    <>
-      <Form addTask={addTask} />
-      {activeTasks.length > 0 && (
-        <TaskList tasks={activeTasks} onStart={startTask} onStop={stopTask} onReset={resetTask} onDelete={deleteTask} />
-      )}
-      {inactiveTasks.length > 0 && (
-        <TaskList
-          tasks={inactiveTasks}
-          onStart={startTask}
-          onStop={stopTask}
-          onReset={resetTask}
-          onDelete={deleteTask}
-        />
-      )}
-      <Counter />
-    </>
+    <div className="p-8 bg-gray-100 min-h-screen">
+      <h1 className="text-3xl font-bold mb-8">TTracker</h1>
+      <AddProject />
+      <ProjectList />
+      <AddTask />
+      <TaskList />
+    </div>
   );
 }
