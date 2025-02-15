@@ -1,4 +1,3 @@
-// src/hooks/useAutoSave.ts
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../state/store';
@@ -12,7 +11,6 @@ const useAutoSave = () => {
     if (!isSaving) {
       setIsSaving(true);
       saveProjectsToStorage(projects);
-      console.log('Projects auto-saved (on change)');
       setIsSaving(false);
     }
   }, [projects, isSaving]);
@@ -22,7 +20,6 @@ const useAutoSave = () => {
       if (projects.length > 0 && !isSaving) {
         setIsSaving(true);
         saveProjectsToStorage(projects);
-        console.log('Projects auto-saved (interval)');
         setIsSaving(false);
       }
     }, 60000);
