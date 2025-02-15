@@ -18,7 +18,7 @@ export default function App() {
         <TaskList
           tasks={inactiveTasks}
           onStart={startTask}
-          onStop={stopTask(0, { isActive: false })}
+          onStop={stopTask}
           onReset={resetTask}
           onDelete={deleteTask}
         />
