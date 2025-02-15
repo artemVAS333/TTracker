@@ -4,6 +4,7 @@ export interface Task {
   id: string;
   title: string;
   isActive: boolean;
+  pinned?: boolean;
   startTime?: number;
 }
 
@@ -33,6 +34,9 @@ const projectSlice = createSlice({
         tasks: [],
       });
     },
+    delteProject: (state, action: PayloadAction<string>) => {
+      state.projects = state.projects.filter((p) => p.id !== action.payload);
+    },
     setActiveProject: (state, action: PayloadAction<string>) => {
       state.activeProjectId = action.payload;
     },
@@ -43,7 +47,14 @@ const projectSlice = createSlice({
           id: crypto.randomUUID(),
           title: action.payload.title,
           isActive: false,
+          pinned: false,
         });
+      }
+    },
+    deleteTask: (state, action: PayloadAction<{ projectId: string; taskId: string }>) => {
+      const project = state.projects.find((p) => p.id === action.payload.projectId);
+      if (project) {
+        project.tasks = project.tasks.filter((task) => task.id !== action.payload.taskId);
       }
     },
     startTask: (state, action: PayloadAction<{ projectId: string; taskId: string }>) => {
@@ -62,11 +73,38 @@ const projectSlice = createSlice({
         );
       }
     },
+    pinTask: (state, action: PayloadAction<{ projectId: string; taskId: string }>) => {
+      const project = state.projects.find((p) => p.id === action.payload.projectId);
+      if (project) {
+        project.tasks = project.tasks.map((task) =>
+          task.id === action.payload.taskId ? { ...task, pinned: true } : task,
+        );
+      }
+    },
+    unPinTask: (state, action: PayloadAction<{ projectId: string; taskId: string }>) => {
+      const project = state.projects.find((p) => p.id === action.payload.projectId);
+      if (project) {
+        project.tasks = project.tasks.map((task) =>
+          task.id === action.payload.taskId ? { ...task, pinned: false } : task,
+        );
+      }
+    },
     setProjects: (state, action: PayloadAction<Project[]>) => {
       state.projects = action.payload;
     },
   },
 });
 
-export const { addProject, setActiveProject, addTask, startTask, stopTask, setProjects } = projectSlice.actions;
+export const {
+  addProject,
+  deleteTask,
+  delteProject,
+  setActiveProject,
+  addTask,
+  startTask,
+  stopTask,
+  pinTask,
+  unPinTask,
+  setProjects,
+} = projectSlice.actions;
 export default projectSlice.reducer;

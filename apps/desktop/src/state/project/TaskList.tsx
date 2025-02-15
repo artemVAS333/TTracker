@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store';
-import { startTask, stopTask } from './projectSlice';
+import { deleteTask, pinTask, startTask, stopTask, unPinTask } from './projectSlice';
 
 export default function TaskList() {
   const dispatch = useDispatch();
@@ -11,19 +11,32 @@ export default function TaskList() {
 
   return (
     <div>
-      <h2>{activeProject.name}</h2>
       <ul>
         {activeProject.tasks.map((task) => (
           <li key={task.id}>
             {task.title} - {task.isActive ? '⏳ working' : '🛑 stopped'}
             <button
-              onClick={() =>
+              onClick={() => {
                 task.isActive
                   ? dispatch(stopTask({ projectId: activeProject.id, taskId: task.id }))
-                  : dispatch(startTask({ projectId: activeProject.id, taskId: task.id }))
-              }
+                  : dispatch(startTask({ projectId: activeProject.id, taskId: task.id }));
+                console.log(task.isActive);
+              }}
             >
               {task.isActive ? 'Stop' : 'Start'}
+            </button>
+            <button
+              className={task.pinned == true ? 'bg-yellow-500' : ``}
+              onClick={() => {
+                task.pinned == false
+                  ? dispatch(pinTask({ projectId: activeProject.id, taskId: task.id }))
+                  : dispatch(unPinTask({ projectId: activeProject.id, taskId: task.id }));
+              }}
+            >
+              {task.pinned != true ? 'Pin' : 'Unpin'}
+            </button>
+            <button onClick={() => dispatch(deleteTask({ projectId: activeProject.id, taskId: task.id }))}>
+              Delete
             </button>
           </li>
         ))}

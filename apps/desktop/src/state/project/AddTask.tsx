@@ -23,7 +23,6 @@ const AddTask = () => {
 
   return (
     <div className="mb-4">
-      <h3 className="text-xl font-semibold mb-2">Add Task</h3>
       <form onSubmit={handleAddTask} className="flex space-x-2">
         <input
           type="text"
