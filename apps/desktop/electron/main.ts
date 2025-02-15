@@ -43,7 +43,11 @@ function createWindow() {
   });
 
   // Load content based on environment
-  VITE_DEV_SERVER_URL ? win.loadURL(VITE_DEV_SERVER_URL) : win.loadFile(path.join(RENDERER_DIST, 'index.html'));
+  if (VITE_DEV_SERVER_URL) {
+    win.loadURL(VITE_DEV_SERVER_URL);
+  } else {
+    win.loadFile(path.join(RENDERER_DIST, 'index.html'));
+  }
 }
 
 // Close app when all windows are closed (except macOS)

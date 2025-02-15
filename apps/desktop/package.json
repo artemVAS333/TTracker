@@ -10,24 +10,23 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tailwindcss/vite": "^4.0.6",
-    "electron-store": "10.0.1",
     "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "tailwindcss": "^4.0.6"
+    "react-dom": "18.2.0"
   },
   "devDependencies": {
+    "@tailwindcss/vite": "4.0.6",
     "@types/react": "18.2.64",
     "@types/react-dom": "18.2.21",
-    "@typescript-eslint/eslint-plugin": "^7.1.1",
-    "@typescript-eslint/parser": "^7.1.1",
+    "@typescript-eslint/eslint-plugin": "7.1.1",
+    "@typescript-eslint/parser": "7.1.1",
     "@vitejs/plugin-react": "4.2.1",
     "electron": "30.0.1",
-    "electron-builder": "25.1.8",
+    "electron-builder": "24.13.3",
+    "electron-store": "10.0.1",
     "eslint": "8.57.0",
     "eslint-plugin-react-hooks": "4.6.0",
     "eslint-plugin-react-refresh": "0.4.5",
-    "sass": "^1.85.0",
+    "tailwindcss": "4.0.6",
     "typescript": "5.2.2",
     "vite": "^5.4.14",
     "vite-plugin-electron": "0.28.6",

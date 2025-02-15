@@ -49,9 +49,14 @@ export default function useTask() {
 
   const setState = (id: number, option: Partial<Task>) => updateTaskState(id, option);
 
-  const stopTask = (id: number) => setState(id, { isActive: false });
-  const resetTask = (id: number) => setState(id, { isActive: false, time: 0 });
-
+  const stopTask = (id: number) => {
+    clearIntervalIfExists(id);
+    setState(id, { isActive: false });
+  };
+  const resetTask = (id: number) => {
+    clearIntervalIfExists(id);
+    setState(id, { isActive: false, time: 0 });
+  };
   const updateTaskState = (id: number, updates: Partial<Task>) => {
     updateTasksAndStore((tasks) => tasks.map((task) => (task.id === id ? { ...task, ...updates } : task)));
   };
