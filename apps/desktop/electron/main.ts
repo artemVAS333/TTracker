@@ -3,8 +3,11 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import Store from 'electron-store';
 
+// Получаем путь к текущему файлу для решения проблемы с __filename и __dirname в ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const store = new Store();
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 process.env.APP_ROOT = path.join(__dirname, '..');
 
@@ -18,6 +21,8 @@ let win: BrowserWindow | null;
 
 function createWindow() {
   win = new BrowserWindow({
+    minWidth: 800,
+    minHeight: 600,
     icon: process.env.VITE_PUBLIC ? path.join(process.env.VITE_PUBLIC, 'electron-vite.svg') : undefined,
     webPreferences: {
       preload: path.join(__dirname, 'preload.mjs'),
@@ -28,7 +33,7 @@ function createWindow() {
 
   win.webContents.on('did-finish-load', () => {
     win?.webContents.send('main-process-message', new Date().toLocaleString());
-    win?.webContents.openDevTools();
+    if (VITE_DEV_SERVER_URL) win?.webContents.openDevTools();
   });
 
   VITE_DEV_SERVER_URL ? win.loadURL(VITE_DEV_SERVER_URL) : win.loadFile(path.join(RENDERER_DIST, 'index.html'));
@@ -45,6 +50,7 @@ app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) createWindow();
 });
 
+// Обработчики IPC
 ipcMain.on('electron-store-get', async (event, val) => {
   event.returnValue = store.get(val);
 });
