@@ -1,8 +1,7 @@
-import { Project } from '../state/project/projectSlice';
+import { Project } from '../types/projectTypes';
 
 export const saveProjectsToStorage = (projects: Project[]) => {
   window.electron.store.set('projects', JSON.stringify(projects));
-  console.log('Projects saved:', projects);
 };
 
 export const loadProjectsFromStorage = (): Project[] => {

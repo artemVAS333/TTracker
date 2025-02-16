@@ -1,14 +1,18 @@
+export interface Task {
+  id: string;
+  title: string;
+  isActive: boolean;
+  pinned?: boolean;
+  startTime?: number;
+}
+
 export interface Project {
-  id: number;
+  id: string;
   name: string;
-  description: string;
   tasks: Task[];
 }
 
-export interface Task {
-  id: number;
-  title: string;
-  description: string;
-  time: number;
-  isActive: boolean;
+export interface ProjectState {
+  projects: Project[];
+  activeProjectId?: string;
 }

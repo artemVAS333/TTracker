@@ -30,6 +30,7 @@ const AddTask = () => {
           onChange={(e) => setTaskTitle(e.target.value)}
           className="p-2 border rounded-lg w-64"
           placeholder="Title of the task"
+          autoComplete="off"
         />
         <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded-lg">
           Add Task

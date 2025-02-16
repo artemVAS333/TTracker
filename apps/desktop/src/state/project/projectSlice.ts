@@ -1,26 +1,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
-export interface Task {
-  id: string;
-  title: string;
-  isActive: boolean;
-  pinned?: boolean;
-  startTime?: number;
-}
-
-export interface Project {
-  id: string;
-  name: string;
-  tasks: Task[];
-}
-
-interface ProjectState {
-  projects: Project[];
-  activeProjectId?: string;
-}
+import { Project, Task, ProjectState } from '../../types/projectTypes';
 
 const initialState: ProjectState = {
   projects: [],
+};
+
+const findProject = (state: ProjectState, projectId: string) => state.projects.find((p) => p.id === projectId);
+
+const updateTask = (project: Project | undefined, taskId: string, updates: Partial<Task>) => {
+  if (project) project.tasks = project.tasks.map((task) => (task.id === taskId ? { ...task, ...updates } : task));
 };
 
 const projectSlice = createSlice({
@@ -34,14 +22,17 @@ const projectSlice = createSlice({
         tasks: [],
       });
     },
-    delteProject: (state, action: PayloadAction<string>) => {
+    deleteProject: (state, action: PayloadAction<string>) => {
       state.projects = state.projects.filter((p) => p.id !== action.payload);
     },
     setActiveProject: (state, action: PayloadAction<string>) => {
       state.activeProjectId = action.payload;
     },
+    unSetActiveProject: (state) => {
+      state.activeProjectId = undefined;
+    },
     addTask: (state, action: PayloadAction<{ projectId: string; title: string }>) => {
-      const project = state.projects.find((p) => p.id === action.payload.projectId);
+      const project = findProject(state, action.payload.projectId);
       if (project) {
         project.tasks.push({
           id: crypto.randomUUID(),
@@ -52,42 +43,29 @@ const projectSlice = createSlice({
       }
     },
     deleteTask: (state, action: PayloadAction<{ projectId: string; taskId: string }>) => {
-      const project = state.projects.find((p) => p.id === action.payload.projectId);
-      if (project) {
-        project.tasks = project.tasks.filter((task) => task.id !== action.payload.taskId);
-      }
+      const project = findProject(state, action.payload.projectId);
+      if (project) project.tasks = project.tasks.filter((task) => task.id !== action.payload.taskId);
     },
     startTask: (state, action: PayloadAction<{ projectId: string; taskId: string }>) => {
-      const project = state.projects.find((p) => p.id === action.payload.projectId);
-      if (project) {
-        project.tasks = project.tasks.map((task) =>
-          task.id === action.payload.taskId ? { ...task, isActive: true, startTime: Date.now() } : task,
-        );
-      }
+      updateTask(findProject(state, action.payload.projectId), action.payload.taskId, {
+        isActive: true,
+        startTime: Date.now(),
+      });
     },
     stopTask: (state, action: PayloadAction<{ projectId: string; taskId: string }>) => {
-      const project = state.projects.find((p) => p.id === action.payload.projectId);
-      if (project) {
-        project.tasks = project.tasks.map((task) =>
-          task.id === action.payload.taskId ? { ...task, isActive: false } : task,
-        );
-      }
+      updateTask(findProject(state, action.payload.projectId), action.payload.taskId, {
+        isActive: false,
+      });
     },
     pinTask: (state, action: PayloadAction<{ projectId: string; taskId: string }>) => {
-      const project = state.projects.find((p) => p.id === action.payload.projectId);
-      if (project) {
-        project.tasks = project.tasks.map((task) =>
-          task.id === action.payload.taskId ? { ...task, pinned: true } : task,
-        );
-      }
+      updateTask(findProject(state, action.payload.projectId), action.payload.taskId, {
+        pinned: true,
+      });
     },
     unPinTask: (state, action: PayloadAction<{ projectId: string; taskId: string }>) => {
-      const project = state.projects.find((p) => p.id === action.payload.projectId);
-      if (project) {
-        project.tasks = project.tasks.map((task) =>
-          task.id === action.payload.taskId ? { ...task, pinned: false } : task,
-        );
-      }
+      updateTask(findProject(state, action.payload.projectId), action.payload.taskId, {
+        pinned: false,
+      });
     },
     setProjects: (state, action: PayloadAction<Project[]>) => {
       state.projects = action.payload;
@@ -98,8 +76,9 @@ const projectSlice = createSlice({
 export const {
   addProject,
   deleteTask,
-  delteProject,
+  deleteProject,
   setActiveProject,
+  unSetActiveProject,
   addTask,
   startTask,
   stopTask,

@@ -22,7 +22,7 @@ const useAutoSave = () => {
         saveProjectsToStorage(projects);
         setIsSaving(false);
       }
-    }, 60000);
+    }, 60000); // 1 minute
 
     return () => clearInterval(interval);
   }, [projects, isSaving]);
