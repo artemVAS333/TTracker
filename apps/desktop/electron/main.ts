@@ -2,7 +2,6 @@ import { app, BrowserWindow, ipcMain, shell } from 'electron';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import Store from 'electron-store';
-import installExtension, { REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } from 'electron-devtools-installer';
 
 // Resolve __filename and __dirname for ESM
 const __filename = fileURLToPath(import.meta.url);
@@ -26,11 +25,6 @@ let win: BrowserWindow | null;
 
 // Create the main window
 function createWindow() {
-  // Install extensions
-  installExtension([REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS])
-    .then(([redux, react]) => console.log(`Added Extensions:  ${redux.name}, ${react.name}`))
-    .catch((err: Error) => console.log('An error occurred: ', err));
-
   // Create window
   win = new BrowserWindow({
     minWidth: 800,
@@ -44,9 +38,7 @@ function createWindow() {
   });
 
   // Send a message when window is ready
-  win.webContents.on('did-finish-load', () => {
-    win?.webContents.send('main-process-message', new Date().toLocaleString());
-  });
+  win.webContents.on('did-finish-load', () => {});
 
   // Open external links in default browser
   win.webContents.setWindowOpenHandler((details) => {
@@ -82,6 +74,4 @@ ipcMain.on('electron-store-set', (_event, key, value) => store.set(key, value));
 ipcMain.on('window-closed', (event) => event.reply('window-closed-reply', { status: 'closed' })); // Confirm window closed
 
 // Create window when app is ready
-app.whenReady().then(async () => {
-  createWindow();
-});
+app.whenReady().then(() => createWindow());

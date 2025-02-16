@@ -22,15 +22,22 @@ export default function ProjectList() {
     }
   };
 
+  const handleDeleteProject = (projectId: string) => {
+    const confirmed = window.confirm('Are you sure you want to delete this project? This action cannot be undone.');
+    if (confirmed) {
+      dispatch(deleteProject(projectId));
+    }
+  };
+
   return (
     <div>
+      <AddTask />
       <PinnedTask />
       <h2 className="text-2xl font-semibold mb-4">{projects.length > 0 ? 'Projects:' : 'No projects'}</h2>
       <ul>
         {[...projects].reverse().map((project) => {
           const isActive = activeProjectId === project.id;
           const isExpanded = expandedProject === project.id;
-
           return (
             <li key={project.id} className="mb-4">
               <div className="flex items-center gap-2">
@@ -47,21 +54,20 @@ export default function ProjectList() {
                 </button>
                 <button
                   className="h-8 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition duration-200"
-                  onClick={() => dispatch(deleteProject(project.id))}
+                  onClick={() => handleDeleteProject(project.id)}
                 >
                   Delete
                 </button>
               </div>
-              <div
-                className={`transition-all duration-300 overflow-hidden ${isExpanded ? 'h-auto opacity-100' : 'h-0 opacity-0'}`}
-              >
-                {isExpanded && (
+              {isExpanded && (
+                <div
+                  className={`transition-all duration-300 overflow-hidden ${isExpanded ? 'h-auto opacity-100' : 'h-0 opacity-0'}`}
+                >
                   <div className="mt-2 p-2 border rounded-lg bg-gray-100">
-                    <AddTask />
                     <TaskList />
                   </div>
-                )}
-              </div>
+                </div>
+              )}
             </li>
           );
         })}

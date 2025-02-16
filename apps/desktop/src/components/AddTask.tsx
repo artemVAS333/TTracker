@@ -1,15 +1,13 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../state/store';
-import { addTask } from '../state/project/projectSlice';
+import { addTask, setActiveProject } from '../state/project/projectSlice';
 
 const AddTask = () => {
-  const [taskTitle, setTaskTitle] = useState('');
-
   const dispatch = useDispatch();
-
+  const [taskTitle, setTaskTitle] = useState('');
+  const projects = useSelector((state: RootState) => state.project.projects);
   const activeProjectId = useSelector((state: RootState) => state.project.activeProjectId);
-
   const handleAddTask = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -19,10 +17,23 @@ const AddTask = () => {
     }
   };
 
-  if (!activeProjectId) return null;
-
   return (
     <div className="mb-4">
+      <span className="text-xl font-semibold mb-2">Chose Project</span>
+      <select
+        name="Choose Project"
+        value={activeProjectId}
+        onChange={(e) => dispatch(setActiveProject(e.target.value))}
+      >
+        <option value="Choose Project" hidden>
+          Choose Project...
+        </option>
+        {projects.map((project) => (
+          <option key={project.id} value={project.id}>
+            {project.name}
+          </option>
+        ))}
+      </select>
       <form onSubmit={handleAddTask} className="flex space-x-2">
         <input
           type="text"
