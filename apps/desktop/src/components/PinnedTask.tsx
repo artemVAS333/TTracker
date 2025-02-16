@@ -5,23 +5,17 @@ import Task from './Task';
 export default function PinnedTask() {
   const projects = useSelector((state: RootState) => state.project.projects);
 
+  const pinnedTasks = projects.flatMap((project) =>
+    project.tasks.filter((task) => task.pinned).map((task) => ({ ...task, project })),
+  );
+
   return (
     <div>
-      <h2>Pinned Tasks:</h2>
+      <h2>{pinnedTasks.length > 0 ? 'Pinned Tasks:' : null}</h2>
       <ul>
-        {projects
-          .reduce(
-            (acc, project) => {
-              const pinnedTasks = project.tasks
-                .filter((task) => task.pinned)
-                .map((task) => ({ ...task, projectId: project.id }));
-              return [...acc, ...pinnedTasks];
-            },
-            [] as Array<{ id: string; title: string; isActive: boolean; pinned?: boolean; projectId: string }>,
-          )
-          .map((task) => (
-            <Task key={task.id} projectId={task.projectId} task={task} />
-          ))}
+        {pinnedTasks.map((task) => (
+          <Task key={task.id} task={task} project={task.project} />
+        ))}
       </ul>
     </div>
   );

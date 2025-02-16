@@ -12,7 +12,7 @@ export default function TaskList() {
     <div>
       <ul>
         {activeProject.tasks.map((task) => (
-          <Task key={task.id} projectId={activeProject.id} task={task} />
+          <Task key={task.id} project={activeProject} task={task} />
         ))}
       </ul>
     </div>

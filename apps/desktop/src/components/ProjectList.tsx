@@ -10,44 +10,61 @@ export default function ProjectList() {
   const dispatch = useDispatch();
   const projects = useSelector((state: RootState) => state.project.projects);
   const activeProjectId = useSelector((state: RootState) => state.project.activeProjectId);
-  const [dropdownOpen, setDropdownOpen] = useState<string | null>(null);
+  const [expandedProject, setExpandedProject] = useState<string | null>(null);
 
   const handleSelectProject = (projectId: string) => {
-    dispatch(setActiveProject(projectId));
-    setDropdownOpen(dropdownOpen === projectId ? null : projectId);
-    if (activeProjectId === projectId) return dispatch(unSetActiveProject());
+    if (activeProjectId === projectId) {
+      dispatch(unSetActiveProject());
+      setExpandedProject(null);
+    } else {
+      dispatch(setActiveProject(projectId));
+      setExpandedProject(projectId);
+    }
   };
-
-  const reversedProjects = [...projects].reverse();
 
   return (
     <div>
       <PinnedTask />
-      <h2 className="text-2xl font-semibold mb-4">{projects.length > 0 ? 'Projects:' : 'Add a project'}</h2>
+      <h2 className="text-2xl font-semibold mb-4">{projects.length > 0 ? 'Projects:' : 'No projects'}</h2>
       <ul>
-        {reversedProjects.map((project) => (
-          <li key={project.id} className="mb-4">
-            <button
-              className={`w-full text-left p-3 bg-blue-500 text-white rounded-lg ${activeProjectId === project.id ? 'bg-blue-600' : ''}`}
-              onClick={() => handleSelectProject(project.id)}
-            >
-              {project.name}
-              {dropdownOpen === project.id ? '▲' : '▼'}
-            </button>
-            <button
-              className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 focus:outline-none transition duration-200"
-              onClick={() => dispatch(deleteProject(project.id))}
-            >
-              Delete
-            </button>
-            <div
-              className={`transition-all duration-300 ease-in-out overflow-hidden ${dropdownOpen === project.id ? 'h-auto' : 'h-0'}`}
-            >
-              <AddTask />
-              <TaskList />
-            </div>
-          </li>
-        ))}
+        {[...projects].reverse().map((project) => {
+          const isActive = activeProjectId === project.id;
+          const isExpanded = expandedProject === project.id;
+
+          return (
+            <li key={project.id} className="mb-4">
+              <div className="flex items-center gap-2">
+                <button
+                  className={`h-8 flex-1 text-left p-3 rounded-lg transition duration-200 ${
+                    isActive ? 'bg-blue-600 text-white' : 'bg-blue-500 text-white hover:bg-blue-600'
+                  }`}
+                  onClick={() => handleSelectProject(project.id)}
+                >
+                  {project.name} {isExpanded ? '▲' : '▼'}
+                </button>
+                <button className="w-8 h-8 bg-green-500 text-white rounded-lg hover:bg-green-600 transition duration-200">
+                  +
+                </button>
+                <button
+                  className="h-8 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition duration-200"
+                  onClick={() => dispatch(deleteProject(project.id))}
+                >
+                  Delete
+                </button>
+              </div>
+              <div
+                className={`transition-all duration-300 overflow-hidden ${isExpanded ? 'h-auto opacity-100' : 'h-0 opacity-0'}`}
+              >
+                {isExpanded && (
+                  <div className="mt-2 p-2 border rounded-lg bg-gray-100">
+                    <AddTask />
+                    <TaskList />
+                  </div>
+                )}
+              </div>
+            </li>
+          );
+        })}
       </ul>
     </div>
   );
