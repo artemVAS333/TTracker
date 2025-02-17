@@ -59,7 +59,7 @@ export default function ProjectList() {
                   Delete
                 </button>
               </div>
-              {isExpanded && (
+              {isExpanded && project.tasks.length > 0 && (
                 <div
                   className={`transition-all duration-300 overflow-hidden ${isExpanded ? 'h-auto opacity-100' : 'h-0 opacity-0'}`}
                 >
