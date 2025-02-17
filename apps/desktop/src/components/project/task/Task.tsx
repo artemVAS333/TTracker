@@ -1,7 +1,7 @@
+import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { deleteTask, pinTask, startTask, stopTask, unPinTask } from '../../../state/project/projectSlice';
 import { Project, Task as TaskOfProject } from '../../../types/projectTypes';
-import { useState } from 'react';
 
 interface TaskProps {
   task?: TaskOfProject;

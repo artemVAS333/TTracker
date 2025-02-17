@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../../state/store';
 import { addTask, setActiveProject } from '../../../state/project/projectSlice';
+import { RootState } from '../../../state/store';
 
 const AddTask = () => {
   const dispatch = useDispatch();

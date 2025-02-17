@@ -1,7 +1,7 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../state/store';
-import { deleteProject, setActiveProject, unSetActiveProject } from '../../state/project/projectSlice';
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteProject, setActiveProject, unSetActiveProject } from '../../state/project/projectSlice';
+import { RootState } from '../../state/store';
 import AddTask from './task/AddTask';
 import TaskList from './task//TaskList';
 import PinnedTask from './task/PinnedTask';
