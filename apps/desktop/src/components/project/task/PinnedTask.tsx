@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { RootState } from '../state/store';
+import { RootState } from '../../../state/store';
 import Task from './Task';
 
 export default function PinnedTask() {

@@ -1,13 +1,17 @@
-*,
-*::before,
-*::after {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  box-sizing: border-box;
+@use 'base/variables' as *;
+@use 'base/mixins' as *;
+@use 'base/functions' as *;
 
-  -webkit-tap-highlight-color: transparent;
-}
+// *,
+// *::before,
+// *::after {
+//   margin: 0;
+//   padding: 0;
+//   border: 0;
+//   box-sizing: border-box;
+
+//   -webkit-tap-highlight-color: transparent;
+// }
 
 ul,
 ol,
@@ -15,15 +19,15 @@ li {
   list-style: none;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-weight: inherit;
-  font-size: inherit;
-}
+// h1,
+// h2,
+// h3,
+// h4,
+// h5,
+// h6 {
+//   font-weight: inherit;
+//   font-size: inherit;
+// }
 
 img {
   vertical-align: top;

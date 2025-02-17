@@ -19,14 +19,4 @@ export default defineConfig({
       renderer: process.env.NODE_ENV === 'test' ? undefined : {},
     }),
   ],
-  css: {
-    preprocessorOptions: {
-      scss: {
-        silenceDeprecations: ['legacy-js-api'],
-        additionalData: `@use "./src/assets/scss/base/variables.scss" as *;  
-				@use "./src/assets/scss/base/mixins.scss" as *; 
-				@use "./src/assets/scss/base/functions.scss" as *;`,
-      },
-    },
-  },
 });

@@ -1,6 +1,6 @@
 import { useDispatch } from 'react-redux';
-import { deleteTask, pinTask, startTask, stopTask, unPinTask } from '../state/project/projectSlice';
-import { Project, Task as TaskOfProject } from '../types/projectTypes';
+import { deleteTask, pinTask, startTask, stopTask, unPinTask } from '../../../state/project/projectSlice';
+import { Project, Task as TaskOfProject } from '../../../types/projectTypes';
 import { useState } from 'react';
 
 interface TaskProps {
@@ -10,7 +10,7 @@ interface TaskProps {
 
 export default function Task({ task, project }: Readonly<TaskProps>) {
   const dispatch = useDispatch();
-  const [confirmDelete, setConfirmDelete] = useState(false); // State to manage confirmation
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   if (!task || !project) return <div className="p-4 border rounded-lg bg-gray-100">Loading task...</div>;
 
@@ -62,17 +62,10 @@ export default function Task({ task, project }: Readonly<TaskProps>) {
             </button>
           </div>
         ) : (
-          <button
-            className="px-3 py-1 rounded bg-red-600 text-white"
-            onClick={() => setConfirmDelete(true)} // Trigger confirmation UI
-          >
+          <button className="px-3 py-1 rounded bg-red-600 text-white" onClick={() => setConfirmDelete(true)}>
             Delete
           </button>
         )}
-
-        <button className="px-3 py-1 rounded bg-red-600 text-white" onClick={handlers.delete}>
-          Delete
-        </button>
       </div>
     </div>
   );

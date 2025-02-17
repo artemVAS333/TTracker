@@ -1,10 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../state/store';
-import { deleteProject, setActiveProject, unSetActiveProject } from '../state/project/projectSlice';
+import { RootState } from '../../state/store';
+import { deleteProject, setActiveProject, unSetActiveProject } from '../../state/project/projectSlice';
 import { useState } from 'react';
-import AddTask from './AddTask';
-import TaskList from './TaskList';
-import PinnedTask from './PinnedTask';
+import AddTask from './task/AddTask';
+import TaskList from './task//TaskList';
+import PinnedTask from './task/PinnedTask';
 
 export default function ProjectList() {
   const dispatch = useDispatch();
@@ -42,18 +42,18 @@ export default function ProjectList() {
             <li key={project.id} className="mb-4">
               <div className="flex items-center gap-2">
                 <button
-                  className={`h-8 flex-1 text-left p-3 rounded-lg transition duration-200 ${
+                  className={`flex-1 text-left p-3 rounded-lg transition duration-200 ${
                     isActive ? 'bg-blue-600 text-white' : 'bg-blue-500 text-white hover:bg-blue-600'
                   }`}
                   onClick={() => handleSelectProject(project.id)}
                 >
                   {project.name} {isExpanded ? '▲' : '▼'}
                 </button>
-                <button className="w-8 h-8 bg-green-500 text-white rounded-lg hover:bg-green-600 transition duration-200">
+                <button className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition duration-200">
                   +
                 </button>
                 <button
-                  className="h-8 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition duration-200"
+                  className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition duration-200"
                   onClick={() => handleDeleteProject(project.id)}
                 >
                   Delete
