@@ -62,9 +62,7 @@ app.on('window-all-closed', () => {
 });
 
 // Recreate window if app is activated (macOS specific)
-app.on('activate', () => {
-  if (BrowserWindow.getAllWindows().length === 0) createWindow();
-});
+app.on('activate', () => BrowserWindow.getAllWindows().length === 0 && createWindow());
 
 // Create window when app is ready
 app.whenReady().then(() => {
