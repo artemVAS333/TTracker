@@ -1,11 +1,9 @@
 import { app, BrowserWindow, ipcMain, shell } from 'electron';
-import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import Store from 'electron-store';
 
-// Resolve __filename and __dirname for ESM
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// Resolve __dirname for ESM
+const __dirname = import.meta.dirname;
 
 // Initialize electron-store for data storage
 const store = new Store();
@@ -68,10 +66,11 @@ app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) createWindow();
 });
 
-// IPC handlers for store operations
-ipcMain.on('electron-store-get', (event, key) => (event.returnValue = store.get(key))); // Get value from store
-ipcMain.on('electron-store-set', (_event, key, value) => store.set(key, value)); // Set value in store
-ipcMain.on('window-closed', (event) => event.reply('window-closed-reply', { status: 'closed' })); // Confirm window closed
-
 // Create window when app is ready
-app.whenReady().then(() => createWindow());
+app.whenReady().then(() => {
+  // IPC handlers for store operations
+  ipcMain.on('electron-store-get', (event, key) => (event.returnValue = store.get(key))); // Get value from store
+  ipcMain.on('electron-store-set', (_event, key, value) => store.set(key, value)); // Set value in store
+  ipcMain.on('window-closed', (event) => event.reply('window-closed-reply', { status: 'closed' })); // Confirm window closed
+  createWindow();
+});

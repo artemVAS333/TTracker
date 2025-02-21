@@ -1,5 +1,5 @@
-import ProjectList from './components/project/ProjectList';
-import AddProject from './components/project/AddProject';
+// import ProjectList from './components/project/ProjectList';
+// import AddProject from './components/project/AddProject';
 import useAutoSave from './hooks/useAutoSave';
 
 export default function App() {
