@@ -1,12 +1,18 @@
 import { app, BrowserWindow, ipcMain, shell } from 'electron';
+import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import Store from 'electron-store';
+// import Database from 'better-sqlite3';
 
-// Resolve __dirname for ESM
-const __dirname = import.meta.dirname;
+// Resolve __filename and __dirname for ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Initialize electron-store for data storage
 const store = new Store();
+
+// Initialize SQLite database
+// const db = new Database(path.join(__dirname, 'data.db'));
 
 // Set app root path
 process.env.APP_ROOT = path.join(__dirname, '..');
