@@ -1,7 +1,9 @@
-import useAutoSave from './hooks/useAutoSave';
+import { useEffect } from 'react';
 
 export default function App() {
-  useAutoSave();
+  useEffect(() => {
+    window.electron.db.set('app', 'desktop');
+  }, []);
   return (
     <div className="flex justify-center min-h-screen bg-gray-100">
       <div className="w-full p-8 bg-white shadow-lg">

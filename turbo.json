@@ -18,7 +18,31 @@
 			"cache": false,
 			"persistent": true
 		},
+		"dev:desktop": {
+			"cache": false,
+			"persistent": true
+		},
+		"dev:docs": {
+			"cache": false,
+			"persistent": true
+		},
+		"dev:server": {
+			"dependsOn": ["db:generate"],
+			"cache": false,
+			"persistent": true
+		},
+		"dev:web": {
+			"cache": false,
+			"persistent": true
+		},
+		"docker:start": {
+			"cache": false
+		},
+		"docker:stop": {
+			"cache": false
+		},
 		"db:generate": {
+			"dependsOn": ["^docker:start"],
 			"cache": false
 		},
 		"db:migrate": {

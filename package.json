@@ -1,9 +1,16 @@
 {
-	"name": "TTracker",
+	"name": "ttracker",
 	"private": true,
+	"type": "module",
 	"scripts": {
+		"docker:start": "ts-node scripts/check-docker.ts && docker-compose up -d",
+		"docker:stop": "docker-compose down",
+		"dev": "npm run docker:start && turbo dev",
+		"dev:desktop": "turbo run dev --filter=desktop",
+		"dev:docs": "turbo run dev --filter=docs",
+		"dev:server": "npm run docker:start && turbo run dev --filter=server",
+		"dev:web": "turbo run dev --filter=web",
 		"build": "turbo build",
-		"dev": "turbo dev",
 		"lint": "turbo lint",
 		"format": "prettier --write \"**/*.{ts,tsx,md}\""
 	},
