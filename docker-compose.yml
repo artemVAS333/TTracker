@@ -21,6 +21,8 @@ services:
 
   adminer:
     image: adminer
+    environment:
+      ADMINER_DESIGN: dracula
     restart: always
     ports:
       - 8080:8080

@@ -11,7 +11,15 @@
 		"dev:server": "npm run docker:start && turbo run dev --filter=server",
 		"dev:web": "turbo run dev --filter=web",
 		"build": "turbo build",
+		"build:desktop": "turbo run build --filter=desktop",
+		"build:docs": "turbo run build --filter=docs",
+		"build:server": "turbo run build --filter=server",
+		"build:web": "turbo run build --filter=web",
 		"lint": "turbo lint",
+		"lint:desktop": "turbo run lint --filter=desktop",
+		"lint:docs": "turbo run lint --filter=docs",
+		"lint:server": "turbo run lint --filter=server",
+		"lint:web": "turbo run lint --filter=web",
 		"format": "prettier --write \"**/*.{ts,tsx,md}\""
 	},
 	"devDependencies": {

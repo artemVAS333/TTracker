@@ -20,10 +20,14 @@ export declare global {
       store: {
         get: (key: unknown) => unknown;
         set: (property: unknown, val: unknown) => void;
+        delete: (key: unknown) => void;
+        clear: () => void;
       };
       db: {
         get: (key: unknown) => unknown;
         set: (property: unknown, val: unknown) => void;
+        delete: (key: unknown) => void;
+        clear: () => void;
       };
     };
   }

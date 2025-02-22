@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 export default function App() {
   useEffect(() => {
-    window.electron.db.set('app', 'desktop');
+    window.electron.db.clear();
   }, []);
   return (
     <div className="flex justify-center min-h-screen bg-gray-100">
