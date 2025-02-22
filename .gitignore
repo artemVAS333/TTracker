@@ -41,6 +41,7 @@ yarn-error.log*
 *.pem
 
 # IDE - VSCode
+.vscode/
 .vscode/*
 # !.vscode/settings.json
 # !.vscode/tasks.json
