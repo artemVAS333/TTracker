@@ -11,8 +11,6 @@ const store = new Store();
 
 // Initialize SQLite database
 const dbPath = join(app.getPath('userData'), 'data.db');
-console.log('Database path:', dbPath);
-
 const db = new Database(dbPath, { verbose: console.log });
 db.exec('CREATE TABLE IF NOT EXISTS data (key TEXT PRIMARY KEY, value TEXT)');
 db.pragma('journal_mode = WAL');
@@ -71,11 +69,17 @@ app.on('window-all-closed', () => {
 // Recreate window if app is activated (macOS specific)
 app.on('activate', () => BrowserWindow.getAllWindows().length === 0 && createWindow());
 
+// Handle window events
+ipcMain.on('window-closed', (event) => event.reply('window-closed-reply', { status: 'closed' })); // Confirm window closed
+ipcMain.on('electron-store-get', (event, key) => (event.returnValue = store.get(key))); // Get value from store
+ipcMain.on('electron-store-set', (_event, key, value) => store.set(key, value)); // Set value in store
+ipcMain.on('electron-db-get', (event, key) => {
+  const result = db.prepare('SELECT value FROM data WHERE key = ?').get(key) as { value: string };
+  event.returnValue = result?.value;
+}); // Get value from database
+ipcMain.on('electron-db-set', (_event, key, value) =>
+  db.prepare('INSERT OR REPLACE INTO data (key, value) VALUES (?, ?)').run(key, value),
+); // Set value in database
+
 // Create window when app is ready
-app.whenReady().then(() => {
-  // IPC handlers for store operations
-  ipcMain.on('electron-store-get', (event, key) => (event.returnValue = store.get(key))); // Get value from store
-  ipcMain.on('electron-store-set', (_event, key, value) => store.set(key, value)); // Set value in store
-  ipcMain.on('window-closed', (event) => event.reply('window-closed-reply', { status: 'closed' })); // Confirm window closed
-  createWindow();
-});
+app.whenReady().then(() => createWindow());
