@@ -21,6 +21,10 @@ export declare global {
         get: (key: unknown) => unknown;
         set: (property: unknown, val: unknown) => void;
       };
+      db: {
+        get: (key: unknown) => unknown;
+        set: (property: unknown, val: unknown) => void;
+      };
     };
   }
 }
