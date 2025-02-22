@@ -1,29 +1,32 @@
 import { app, BrowserWindow, ipcMain, shell } from 'electron';
-import { fileURLToPath } from 'node:url';
-import path from 'node:path';
+import { join } from 'node:path';
 import Store from 'electron-store';
 import Database from 'better-sqlite3';
 
-// Resolve __filename and __dirname for ESM
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// Resolve __dirname for ESM
+const __dirname = import.meta.dirname;
 
 // Initialize electron-store for data storage
 const store = new Store();
 
 // Initialize SQLite database
-const db = new Database(path.join(__dirname, 'data.db'));
+const dbPath = join(app.getPath('userData'), 'data.db');
+console.log('Database path:', dbPath);
+
+const db = new Database(dbPath, { verbose: console.log });
+db.exec('CREATE TABLE IF NOT EXISTS data (key TEXT PRIMARY KEY, value TEXT)');
+db.pragma('journal_mode = WAL');
 
 // Set app root path
-process.env.APP_ROOT = path.join(__dirname, '..');
+process.env.APP_ROOT = join(__dirname, '..');
 
 // Set paths for dev server and production renderer
 export const VITE_DEV_SERVER_URL = process.env['VITE_DEV_SERVER_URL'];
-export const MAIN_DIST = path.join(process.env.APP_ROOT, 'dist-electron');
-export const RENDERER_DIST = path.join(process.env.APP_ROOT, 'dist');
+export const MAIN_DIST = join(process.env.APP_ROOT, 'dist-electron');
+export const RENDERER_DIST = join(process.env.APP_ROOT, 'dist');
 
 // Set public folder based on dev or prod
-process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path.join(process.env.APP_ROOT, 'public') : RENDERER_DIST;
+process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? join(process.env.APP_ROOT, 'public') : RENDERER_DIST;
 
 let win: BrowserWindow | null;
 
@@ -33,16 +36,14 @@ function createWindow() {
   win = new BrowserWindow({
     minWidth: 800,
     minHeight: 600,
-    icon: process.env.VITE_PUBLIC ? path.join(process.env.VITE_PUBLIC, 'electron-vite.svg') : undefined,
+    icon: process.env.VITE_PUBLIC ? join(process.env.VITE_PUBLIC, 'electron-vite.svg') : undefined,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.mjs'), // Preload script
-      contextIsolation: true, // Enable context isolation
-      nodeIntegration: false, // Disable Node.js integration
+      preload: join(__dirname, 'preload.mjs'), // Preload script
     },
   });
 
   // Send a message when window is ready
-  win.webContents.on('did-finish-load', () => {});
+  // win.webContents.on('did-finish-load', () => {});
 
   // Open external links in default browser
   win.webContents.setWindowOpenHandler((details) => {
@@ -55,7 +56,7 @@ function createWindow() {
     win.loadURL(VITE_DEV_SERVER_URL);
     win.webContents.openDevTools();
   } else {
-    win.loadFile(path.join(RENDERER_DIST, 'index.html'));
+    win.loadFile(join(RENDERER_DIST, 'index.html'));
   }
 }
 
