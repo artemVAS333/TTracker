@@ -22,11 +22,18 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
 
 contextBridge.exposeInMainWorld('electron', {
   store: {
-    get(key: unknown) {
-      return ipcRenderer.sendSync('electron-store-get', key);
-    },
-    set(property: unknown, val: unknown) {
-      ipcRenderer.send('electron-store-set', property, val);
-    },
+    get: (key: unknown) => ipcRenderer.sendSync('electron-store-get', key),
+    set: (property: unknown, val: unknown) => ipcRenderer.send('electron-store-set', property, val),
+  },
+  //   get(key: unknown) {
+  //     return ipcRenderer.sendSync('electron-store-get', key);
+  //   },
+  //   set(property: unknown, val: unknown) {
+  //     ipcRenderer.send('electron-store-set', property, val);
+  //   },
+  // },
+  db: {
+    get: (key: unknown) => ipcRenderer.sendSync('electron-db-get', key),
+    set: (property: unknown, val: unknown) => ipcRenderer.send('electron-db-set', property, val),
   },
 });
