@@ -40,9 +40,7 @@ yarn-error.log*
 .DS_Store
 *.pem
 
-# IDE
-# VSCode
-.vscode/
+# IDE - VSCode
 .vscode/*
 # !.vscode/settings.json
 # !.vscode/tasks.json
