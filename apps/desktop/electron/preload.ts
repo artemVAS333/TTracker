@@ -22,7 +22,7 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
 
 contextBridge.exposeInMainWorld('electron', {
   store: {
-    get: (key: unknown) => ipcRenderer.sendSync('electron-store-get', key),
+    get: async (key: unknown) => await ipcRenderer.invoke('electron-store-get', key),
     set: (property: unknown, val: unknown) => ipcRenderer.send('electron-store-set', property, val),
     delete: (key: unknown) => ipcRenderer.send('electron-store-delete', key),
     clear: () => ipcRenderer.send('electron-store-clear'),

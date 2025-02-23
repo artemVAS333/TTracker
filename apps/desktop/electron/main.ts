@@ -44,6 +44,10 @@ function createWindow() {
   } else {
     win.loadFile(join(RENDERER_DIST, 'index.html'));
   }
+
+  // Initialize
+  initStoreHandlers();
+  initDbHandlers();
 }
 
 // Close app when all windows are closed (except macOS)
@@ -58,8 +62,4 @@ app.on('window-all-closed', () => {
 app.on('activate', () => BrowserWindow.getAllWindows().length === 0 && createWindow());
 
 // Create window when app is ready
-app.whenReady().then(() => {
-  initStoreHandlers();
-  initDbHandlers();
-  createWindow();
-});
+app.whenReady().then(() => createWindow());
