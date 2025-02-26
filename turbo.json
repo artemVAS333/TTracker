@@ -35,14 +35,14 @@
 			"cache": false,
 			"persistent": true
 		},
-		"docker:start": {
+		"docker:up": {
 			"cache": false
 		},
 		"docker:stop": {
 			"cache": false
 		},
 		"db:generate": {
-			"dependsOn": ["^docker:start"],
+			"dependsOn": ["^docker:up"],
 			"cache": false
 		},
 		"db:migrate": {

@@ -6,7 +6,7 @@
 		"dev": "npm run docker:up && turbo dev",
 		"dev:desktop": "turbo run dev --filter=desktop",
 		"dev:docs": "turbo run dev --filter=docs",
-		"dev:server": "npm run docker:start && turbo run dev --filter=server",
+		"dev:server": "npm run docker:up && turbo run dev --filter=server",
 		"dev:web": "turbo run dev --filter=web",
 		"build": "turbo build",
 		"build:desktop": "turbo run build --filter=desktop",
@@ -19,7 +19,7 @@
 		"lint:server": "turbo run lint --filter=server",
 		"lint:web": "turbo run lint --filter=web",
 		"format": "prettier --write \"**/*.{ts,tsx,md}\"",
-		"docker:up": "docker-compose up",
+		"docker:up": "docker-compose up -d",
 		"docker:stop": "docker-compose down"
 	},
 	"devDependencies": {
