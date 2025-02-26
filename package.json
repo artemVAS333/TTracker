@@ -3,9 +3,7 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"docker:start": "ts-node scripts/check-docker.ts && docker-compose up -d",
-		"docker:stop": "docker-compose down",
-		"dev": "npm run docker:start && turbo dev",
+		"dev": "npm run docker:up && turbo dev",
 		"dev:desktop": "turbo run dev --filter=desktop",
 		"dev:docs": "turbo run dev --filter=docs",
 		"dev:server": "npm run docker:start && turbo run dev --filter=server",
@@ -20,7 +18,9 @@
 		"lint:docs": "turbo run lint --filter=docs",
 		"lint:server": "turbo run lint --filter=server",
 		"lint:web": "turbo run lint --filter=web",
-		"format": "prettier --write \"**/*.{ts,tsx,md}\""
+		"format": "prettier --write \"**/*.{ts,tsx,md}\"",
+		"docker:up": "docker-compose up",
+		"docker:stop": "docker-compose down"
 	},
 	"devDependencies": {
 		"prettier": "^3.5.0",
